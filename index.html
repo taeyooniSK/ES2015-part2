@@ -83,6 +83,26 @@
 
         console.log("ALL DONE!");
 
+
+        /*
+            Promise.all
+            - Accepts an array of promises and resolves all of them or rejects once a single one of the promises has been first rejected(fail fast)
+            - if all of the passed-in promises fulfill, Promise.all is fulfilled with an array of the values from the passed-in promises, in the same order as the promises passed in.
+            - The promises don't resolve sequentially, but Promise.all waits for them
+            */
+
+            function getTodo(num){
+                return $.getJSON(`https://jsonplaceholder.typicode.com/todos/${num}`);
+            }
+
+            var todoPromise1 = getTodo(1);
+            var todoPromise2 = getTodo(2);
+            var todoPromise3 = getTodo(3);
+
+            Promise.all([todoPromise1, todoPromise2, todoPromise3]).then( todos => {
+                return todos.forEach( todo => console.log(todo.title));
+            })
+
         
     </script>
 </body>
