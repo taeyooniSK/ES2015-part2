@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+        src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <title>Promise</title>
+</head>
+<body>
+    <script>
+        /*
+            Promise :
+             - a one time guaranteed return of some future value
+             - when that value is figured out - the promise is resolved/fulfilled or rejected
+             - Friendly way to refactor callback code ( 콜백헬에서 벗어나게 해준다.)
+
+            Example :
+            - 1. You're hungry - so you go to Mcdonalds         
+            - 2. You place your oder and get a ticket(a promise)  // 1과 2단계는 데이터를 받기 위한 코드를 작성한다고 보면됨 
+            - 3. After soome time, you either get your food and the promise is resolved or you do not get your food and the promise is rejected
+            - 4. if you want to another order - you need a new Promise. (promise가 rejected되거나 resolved 되기만 하면 그 과정은 끝난 것이고 새로운 티켓을 받아야함(맥도날드 비유로 하자면))
+
+
+            I can create my own promises
+
+            - promise is created using the new keyword
+            - Every promise constructor accpets a callback function which contains two parameters, resolve and reject
+            - You can call these paramters whatever you like, resolve and reject are most common
+            - These paramters are both functions to be run if the promise is resolved or rejected
+
+
+        */
+
+        
+        function displayAtRandomTime(){
+            return new Promise( (resolve, reject) => {
+                setTimeout( () => {
+                    if(Math.random() > .5){
+                        resolve("Resolved!"); // resolve함수 안에 전달된 "Resolved!"가 밑에 then의 argument(parameter value에 대한 값)으로 전달됨
+                    } else {
+                       reject("Rejected!"); // reject함수 안에 전달된 "Rejected!"가 catct 메소드의 argument(parameter err에 대한 값)으로 전달됨
+                    }
+                }, 1000)
+            })
+        }
+
+        displayAtRandomTime().then( value => {   //promise가 좋은 이유는 각 .then이 쓰일때마다새로운 promise를 만들 수 있어서 이다.
+            console.log(value);
+        }).catch( err => console.log(err));
+
+
+
+        /*
+         A simple example of Promise
+         - The returned value from a promise will always contain a .then and .catch method which are functions to be executed when the promise is resolved or rejected
+         - 만약 resolve되면 .then을 이용하여 return된 값을 사용할 수 있으며 reject되면 .catch 메소드를 이용해서 에러를 핸들링 할 수 있음
+
+
+        Returning promises
+
+        since a promise always returns something that has a .then(thenable) - I can chain promises together and return values from one promsie to another!
+
+
+         */
+
+
+        let todos =[];
+
+        $.getJSON("https://jsonplaceholder.typicode.com/todos/1")  
+
+        .then( todo => {
+            todos.push(todo.title);
+            return $.getJSON("https://jsonplaceholder.typicode.com/todos/2");
+        })
+        .then( todo => {
+            todos.push(todo.title);
+            console.log(todos);
+        })
+
+        console.log("ALL DONE!");
+
+        
+    </script>
+</body>
+</html>
