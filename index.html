@@ -142,8 +142,22 @@
            return $.getJSON(`https://swapi.co/api/people/${num}`);
         }
 
-        starWarsString(10).then( character => {
-            console.log(character.name);
+        var info = {};
+
+        starWarsString(10).then( data => {
+            info.characterName = data.name;
+            info.characterURL = data.url;
+            console.log(info.characterName);
+            return $.getJSON(`${data.films.filter( movie => movie.lastIndexOf(1) > 0 )}`);
+        }).then( data => {
+            console.log(data);
+            info.firstMovie = data.title;
+            info.director = data.director;
+            info.planetURL = data.planets[data.planets.length-1]; 
+            console.log(`${info.characterName} is featured in ${info.firstMovie}, by ${info.director}`);
+            return $.getJSON(info.planetURL);
+        }).then( data => {
+            console.log(`${info.characterName} is featured in ${info.firstMovie}, by ${info.director} and it takes place on ${data.name}`);
         })
        
 
