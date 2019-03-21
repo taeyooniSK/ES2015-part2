@@ -33,7 +33,7 @@
             - These paramters are both functions to be run if the promise is resolved or rejected
 
 
-        */
+        
 
         
         function displayAtRandomTime(){
@@ -52,7 +52,10 @@
             console.log(value);
         }).catch( err => console.log(err));
 
+        */
 
+
+        //---------------------------------------------------------------------------------------------------------------------
 
         /*
          A simple example of Promise
@@ -63,9 +66,6 @@
         Returning promises
 
         since a promise always returns something that has a .then(thenable) - I can chain promises together and return values from one promsie to another!
-
-
-         */
 
 
         let todos =[];
@@ -82,15 +82,24 @@
         })
 
         console.log("ALL DONE!");
+        */
 
-
+        //---------------------------------------------------------------------------------------------------------------------
+        
         /*
+
             Promise.all
             - Accepts an array of promises and resolves all of them or rejects once a single one of the promises has been first rejected(fail fast)
             - if all of the passed-in promises fulfill, Promise.all is fulfilled with an array of the values from the passed-in promises, in the same order as the promises passed in.
             - The promises don't resolve sequentially, but Promise.all waits for them
-            */
+            
+        
+            Promise.all의 장점은 각각의 다른 프로미스들을 .then으로 chaining하는 것보다 모든 promise를 .all메소드안에 위치시켜주면 더 편하게 할 수 있음
+            ES2015에서 Promise contsructor에서 비록한 메소드 중에 가장 흔하게 쓰는 메소드 중이다.
+        
 
+
+        
             function getTodo(num){
                 return $.getJSON(`https://jsonplaceholder.typicode.com/todos/${num}`);
             }
@@ -103,6 +112,44 @@
                 return todos.forEach( todo => console.log(todo.title));
             })
 
+        */
+
+        //---------------------------------------------------------------------------------------------------------------------
+
+            
+/*
+    Exercise
+*/
+        //1. Get a user who has the most followers using github API
+        function getMostFollowers(userName){
+            return $.getJSON(`https://api.github.com/users/${userName}`);
+        }
+
+        var user1 = getMostFollowers("taeyooniSK");
+        var user2 = getMostFollowers("zpalexander");
+        var user3 = getMostFollowers("ariellephan");
+
+        Promise.all([user1, user2, user3]).then( users => {
+            return users.reduce( (acc, next) => { 
+                acc.followers < next.followers ? acc = next : acc;
+                console.log(`${acc.name} has the most followers with ${acc.followers}`);
+            });
+        });
+
+        
+    //2. get a chacracter using swapi API
+        function starWarsString(num){
+           return $.getJSON(`https://swapi.co/api/people/${num}`);
+        }
+
+        starWarsString(10).then( character => {
+            console.log(character.name);
+        })
+       
+
+    
+
+    
         
     </script>
 </body>
