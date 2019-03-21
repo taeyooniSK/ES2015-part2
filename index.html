@@ -120,7 +120,9 @@
 /*
     Exercise
 */
-        //1. Get a user who has the most followers using github API
+        /* 1. Get a user who has the most followers using github API
+             Before refactoring:
+
         function getMostFollowers(userName){
             return $.getJSON(`https://api.github.com/users/${userName}`);
         }
@@ -136,8 +138,31 @@
             });
         });
 
-        
-    //2. get a chacracter using swapi API
+    */
+
+    // Refactored
+
+    function getMostFollowers(...usernames){
+        let baseURL = "https://api.github.com/users/";
+        let urls = usernames.map( username => $.getJSON(baseURL + username));
+        return Promise.all(urls).then( data => {
+            let max = data.sort( (a,b) => {
+                return a.followers - b.followers;                       
+                 /*
+                    if (a.followers < b.followers) return -1
+                    if (a.followers > b.followers) return 1;
+                    return 0; 이거 대신 위에 짧게 쓸 수 있다.(오른차순)
+
+                    내림차순으로 하자면 b.followers - a.followers로 하면 되고 함수밖에는 [0]을하면 됨
+                */
+            })[data.length-1];
+            console.log(max);
+            return `${max.name} has the most followers with ${max.followers}`;
+        })
+    }
+
+
+    /* 2. get a chacracter using swapi API
         function starWarsString(num){
            return $.getJSON(`https://swapi.co/api/people/${num}`);
         }
@@ -159,7 +184,31 @@
         }).then( data => {
             console.log(`${info.characterName} is featured in ${info.firstMovie}, by ${info.director} and it takes place on ${data.name}`);
         })
-       
+    */
+
+    // Refactored
+
+    function starWarsString(id){
+        var str = "";
+        return $.getJSON(`https://swapi.co/api/people/${id}/`).then( data => {
+            str += `${data.name} is featured in `;
+            let filmData = data.films[0];
+            return $.getJSON(filmData);
+        }).then( data => {
+            str += `${data.title}, directed by ${data.director}`;
+            let planetData = data.planets[0];
+            return $.getJSON(planetData);
+        }).then( data => {
+            str += `and it takes places in ${data.name}`;
+            return str;
+        }).then( finalStr => {
+            return finalStr;
+        })
+    };
+
+    starWarsString(10).then(data => {
+        console.log(data);
+    })
 
     
 
